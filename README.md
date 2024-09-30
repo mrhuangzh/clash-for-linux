@@ -1,63 +1,47 @@
-[TOC]
 
-# 项目介绍
+# ubuntu 安装 clash
 
-此项目是通过使用开源项目[clash](https://github.com/Dreamacro/clash)作为核心程序，再结合脚本实现简单的代理功能。
+## 目的
+通过 `clash` ，使得 `ubuntu` 服务器能够访问 `目标服务器`，实现加速或 ·github· 稳定访问等。
+## 步骤一：下载 clash
+下载 ：[https://github.com/mrhuangzh/clash-for-linux](https://github.com/mrhuangzh/clash-for-linux)
+点击 `code` -> `Download zip`，下载 `zip` 文件
+![image](https://github.com/user-attachments/assets/be746d1a-e674-4d88-8c17-b79a4c4008b6)
 
-主要是为了解决我们在服务器上下载GitHub等一些国外资源速度慢的问题。
-
-<br>
-
-# 使用须知
-
-- 运行本项目建议使用root用户，或者使用 sudo 提权。
-- 使用过程中如遇到问题，请优先查已有的 [issues](https://github.com/wanhebin/clash-for-linux/issues)。
-- 在进行issues提交前，请替换提交内容中是敏感信息（例如：订阅地址）。
-- 本项目是基于 [clash](https://github.com/Dreamacro/clash) 、[yacd](https://github.com/haishanh/yacd) 进行的配置整合，关于clash、yacd的详细配置请去原项目查看。
-- 此项目不提供任何订阅信息，请自行准备Clash订阅地址。
-- 运行前请手动更改`.env`文件中的`CLASH_URL`变量值，否则无法正常运行。
-- 当前在RHEL系列和Debian系列Linux系统中测试过，其他系列可能需要适当修改脚本。
-- 支持 x86_64/aarch64 平台
-
-> **注意**：当你在使用此项目时，遇到任何无法独自解决的问题请优先前往 [Issues](https://github.com/wanhebin/clash-for-linux/issues) 寻找解决方法。由于空闲时间有限，后续将不再对Issues中 “已经解答”、“已有解决方案” 的问题进行重复性的回答。
-
-<br>
-
-# 使用教程
-
-## 下载项目
-
-下载项目
-
-```bash
-$ git clone https://github.com/wanhebin/clash-for-linux.git
+## 步骤二：上传服务器
+1、将下载的zip文件上传至服务器
+```cmd
+# ll
+total 12572
+drwxr-xr-x 2 root root     4096 Sep 26 10:02 ./
+drwxr-xr-x 3 root root     4096 Sep 26 10:01 ../
+-rw-r--r-- 1 root root 12862023 Sep 26 10:02 clash-for-linux-master.zip
 ```
-
-进入到项目目录，编辑`.env`文件，修改变量`CLASH_URL`的值。
-
-```bash
-$ cd clash-for-linux
-$ vim .env
+2、解压zip文件
+```cmd
+# unzip clash-for-linux-master.zip
+# ll
+total 12576
+drwxr-xr-x 3 root root     4096 Sep 26 10:05 ./
+drwxr-xr-x 3 root root     4096 Sep 26 10:01 ../
+drwxr-xr-x 7 root root     4096 Apr  9  2023 clash-for-linux-master/
+-rw-r--r-- 1 root root 12862023 Sep 26 10:02 clash-for-linux-master.zip
 ```
-
-> **注意：** `.env` 文件中的变量 `CLASH_SECRET` 为自定义 Clash Secret，值为空时，脚本将自动生成随机字符串。
-
-<br>
-
-## 启动程序
-
-直接运行脚本文件`start.sh`
-
-- 进入项目目录
-
-```bash
-$ cd clash-for-linux
+## 步骤三：配置 clash
+### 1、进入解压后的 `clash-for-linux-master` 目录。
+```cmd
+# cd clash-for-linux-master
 ```
+### 2、编辑`.env`文件，修改变量`CLASH_URL`的值为订阅地址。
+`.env` 文件中的变量 `CLASH_SECRET` 为自定义 Clash Secret，值为空时，脚本将自动生成随机字符串，可以空着。
+```cmd
+# vim .env
+```
+![image](https://github.com/user-attachments/assets/359d2467-e0cc-451e-850c-6ac182685715)
 
-- 运行启动脚本
-
-```bash
-$ sudo bash start.sh
+### 3、启动程序
+```cmd
+# sudo bash start.sh
 
 正在检测订阅地址...
 Clash订阅地址可访问！                                      [  OK  ]
@@ -69,103 +53,112 @@ Clash订阅地址可访问！                                      [  OK  ]
 服务启动成功！                                             [  OK  ]
 
 Clash Dashboard 访问地址：http://<ip>:9090/ui
-Secret：xxxxxxxxxxxxx
+Secret：eda0df0e6665ed2xxxxxxxxxxxxxxxxxxxxxxxxx
 
 请执行以下命令加载环境变量: source /etc/profile.d/clash.sh
 
 请执行以下命令开启系统代理: proxy_on
 
 若要临时关闭系统代理，请执行: proxy_off
-
 ```
-
-```bash
-$ source /etc/profile.d/clash.sh
-$ proxy_on
+### 4、根据提示依次执行命令
+```cmd
+# source /etc/profile.d/clash.sh
+# proxy_on
+[√] 已开启代理
 ```
-
-- 检查服务端口
-
-```bash
-$ netstat -tln | grep -E '9090|789.'
-tcp        0      0 127.0.0.1:9090          0.0.0.0:*               LISTEN     
-tcp6       0      0 :::7890                 :::*                    LISTEN     
-tcp6       0      0 :::7891                 :::*                    LISTEN     
+### 5、检查服务端口
+```cmd
+# netstat -tln | grep -E '9090|789.'
+tcp6       0      0 :::9090                 :::*                    LISTEN
+tcp6       0      0 :::7890                 :::*                    LISTEN
+tcp6       0      0 :::7891                 :::*                    LISTEN
 tcp6       0      0 :::7892                 :::*                    LISTEN
 ```
-
-- 检查环境变量
-
-```bash
-$ env | grep -E 'http_proxy|https_proxy'
-http_proxy=http://127.0.0.1:7890
+### 6、检查环境变量
+```cmd
+# env | grep -E 'http_proxy|https_proxy'
 https_proxy=http://127.0.0.1:7890
+http_proxy=http://127.0.0.1:7890
+```
+### 7、查看终端中是否可以访问目标服务器如搜索网站等
+可正常访问：
+```cmd
+# curl https://www.google.com
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>302 Moved</TITLE></HEAD><BODY>
+<H1>302 Moved</H1>
+The document has moved
+<A HREF="https://www.google.com.hk/url?sa=p&amp;hl=zh-CN&amp;pref=hkredirect&amp;pval=yes&amp;q=https://www.google.com.hk/&amp;ust=1727318388553155&amp;usg=AOvVaw1GXpeDoaba7wTT2otAmfKM">here</A>.
+</BODY></HTML>
 ```
 
-以上步鄹如果正常，说明服务clash程序启动成功，现在就可以体验高速下载github资源了。
-
-<br>
-
-## 重启程序
-
-如果需要对Clash配置进行修改，请修改 `conf/config.yaml` 文件。然后运行 `restart.sh` 脚本进行重启。
-
-> **注意：**
-> 重启脚本 `restart.sh` 不会更新订阅信息。
-
-<br>
-
-## 停止程序
-
-- 进入项目目录
-
-```bash
-$ cd clash-for-linux
+### 8、新建终端检测是否可以访问
+```cmd
+# echo $http_proxy
+新终端无系统代理环境变量
+# curl https://www.google.com
+新终端无法访问外网
 ```
-
-- 关闭服务
-
-```bash
-$ sudo bash shutdown.sh
-
-服务关闭成功，请执行以下命令关闭系统代理：proxy_off
-
+### 9、其他终端无法访问目标服务器解决方法
+#### 方法一：临时设置代理（仅对当前会话有效）
+```cmd
+# export http_proxy=http://127.0.0.1:7890
+# export https_proxy=http://127.0.0.1:7890
+# curl http://www.google.com
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>302 Moved</TITLE></HEAD><BODY>
+<H1>302 Moved</H1>
+The document has moved
+<A HREF="http://www.google.com.hk/url?sa=p&amp;hl=zh-CN&amp;pref=hkredirect&amp;pval=yes&amp;q=http://www.google.com.hk/&amp;ust=1727318635293778&amp;usg=AOvVaw1EcsWf7V7kk489rrJ_HlxI">here</A>.
+</BODY></HTML>
 ```
-
-```bash
-$ proxy_off
+#### 方法二：永久设置代理（对所有新会话有效）
+在 ~/.bashrc 配置文件中添加系统代理，并刷新配置
+```cmd
+# vim ~/.bashrc
+# source ~/.bashrc
 ```
+![image](https://github.com/user-attachments/assets/bcd7cabe-5fd4-436f-9de9-e72e9642e546)
 
-然后检查程序端口、进程以及环境变量`http_proxy|https_proxy`，若都没则说明服务正常关闭。
+### 10、新建终端，测试连接，可正常访问
+```cmd
+# curl https://www.google.com
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>302 Moved</TITLE></HEAD><BODY>
+<H1>302 Moved</H1>
+The document has moved
+<A HREF="https://www.google.com.hk/url?sa=p&amp;hl=zh-CN&amp;pref=hkredirect&amp;pval=yes&amp;q=https://www.google.com.hk/&amp;ust=1727318828490860&amp;usg=AOvVaw04dUkcVg0B2Kczy49BvvLs">here</A>.
+</BODY></HTML>
+```
+### 11、使用 sudo curl https://www.google.com 时代理失效
+默认情况下，sudo 会清除环境变量。
+#### 解决方法一：
+如果需要在使用 sudo 时保留代理设置，可以使用 -E 选项：
+```cmd
+# sudo -E http_proxy=http://127.0.0.1:7890 https_proxy=http://127.0.0.1:7890 curl https://www.google.com
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>302 Moved</TITLE></HEAD><BODY>
+<H1>302 Moved</H1>
+The document has moved
+<A HREF="https://www.google.com.hk/url?sa=p&amp;hl=zh-CN&amp;pref=hkredirect&amp;pval=yes&amp;q=https://www.google.com.hk/&amp;ust=1727318917423991&amp;usg=AOvVaw0Hd7h9cjlHqntNCMJ-skTe">here</A>.
+</BODY></HTML>
+```
+#### 解决方法二：
+更新配置文件 /etc/sudoers ，加入 Defaults env_keep += "http_proxy https_proxy" 
+```cmd
+# sudo chmod +w /etc/sudoers
+# sudo vim /etc/sudoers
+```
+![image](https://github.com/user-attachments/assets/425e9a26-d4d0-47d4-96e7-32d583ff7b1e)
 
-
-<br>
-
-## Clash Dashboard
-
-- 访问 Clash Dashboard
-
-通过浏览器访问 `start.sh` 执行成功后输出的地址，例如：http://192.168.0.1:9090/ui
-
-- 登录管理界面
-
-在`API Base URL`一栏中输入：http://\<ip\>:9090 ，在`Secret(optional)`一栏中输入启动成功后输出的Secret。
-
-点击Add并选择刚刚输入的管理界面地址，之后便可在浏览器上进行一些配置。
-
-- 更多教程
-
-此 Clash Dashboard 使用的是[yacd](https://github.com/haishanh/yacd)项目，详细使用方法请移步到yacd上查询。
-
-
-<br>
-
-# 常见问题
-
-1. 部分Linux系统默认的 shell `/bin/sh` 被更改为 `dash`，运行脚本会出现报错（报错内容一般会有 `-en [ OK ]`）。建议使用 `bash xxx.sh` 运行脚本。
-
-2. 部分用户在UI界面找不到代理节点，基本上是因为厂商提供的clash配置文件是经过base64编码的，且配置文件格式不符合clash配置标准。
-
-   目前此项目已集成自动识别和转换clash配置文件的功能。如果依然无法使用，则需要通过自建或者第三方平台（不推荐，有泄露风险）对订阅地址转换。
-   
-3. 程序日志中出现`error: unsupported rule type RULE-SET`报错，解决方法查看官方[WIKI](https://github.com/Dreamacro/clash/wiki/FAQ#error-unsupported-rule-type-rule-set)
+此时 sudo 已可直接使用系统代理
+```cmd
+# sudo curl https://www.google.com
+<HTML><HEAD><meta http-equiv="content-type" content="text/html;charset=utf-8">
+<TITLE>302 Moved</TITLE></HEAD><BODY>
+<H1>302 Moved</H1>
+The document has moved
+<A HREF="https://www.google.com.hk/url?sa=p&amp;hl=zh-CN&amp;pref=hkredirect&amp;pval=yes&amp;q=https://www.google.com.hk/&amp;ust=1727319095030180&amp;usg=AOvVaw32VzugSSHhHK9YnC4Yt9aR">here</A>.
+</BODY></HTML>
+```
